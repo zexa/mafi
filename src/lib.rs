@@ -4,7 +4,7 @@ use axum::{
     routing::{get, post, delete},
     Router, extract::{Extension, extractor_middleware},
 };
-use game::{controller::{get_game, start_game, end_game, get_all_games, get_game_role}, game_repository::GameRepository, game::Game};
+use game::{controller::{get_game, start_game, end_game, get_all_games, get_user_player}, game_repository::GameRepository, game::Game};
 use lobby::{controller::{create_lobby, delete_lobby, get_lobby, join_lobby, get_all_lobbies, add_role_to_lobby}, lobby_repository::LobbyRepository, lobby::Lobby};
 use roles::controller::get_all_roles;
 use tracing::info;
@@ -18,7 +18,7 @@ mod game;
 
 pub fn get_router() -> Router {
     let game_router = Router::new()
-        .route("/lobby/:lobby_uuid/game/:game_uuid/role", get(get_game_role))
+        .route("/lobby/:lobby_uuid/game/:game_uuid/player/me", get(get_user_player))
         .route("/lobby/:lobby_uuid/game/:game_uuid", get(get_game))
         .route("/lobby/:lobby_uuid/game/:game_uuid", delete(end_game))
         .route_layer(extractor_middleware::<Game>());

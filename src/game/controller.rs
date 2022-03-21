@@ -89,7 +89,7 @@ pub async fn end_game(
     Ok(StatusCode::OK)
 }
 
-pub async fn get_game_role(
+pub async fn get_user_player(
     game: Game,
     user: User,
 ) -> Result<impl IntoResponse, AppException> {

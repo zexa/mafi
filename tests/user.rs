@@ -20,9 +20,4 @@ async fn register_user_returns_ok_status_code() {
 #[test]
 async fn register_user_returns_valid_json() {
     let response = register_user_valid().await;
-    // let json = serde_json::from_str(response.get_body());
-
-
-
-    // assert_eq!(response.get_status_code(), &200_u16, "{:?}", response);
 }
