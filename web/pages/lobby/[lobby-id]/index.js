@@ -3,7 +3,7 @@ import { Text } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
 import { Spacer } from '@nextui-org/react';
 
-function IndividualLobby() {
+function IndividualLobby(props) {
     return (
         <div>
             <Text h1>Lobby</Text>
