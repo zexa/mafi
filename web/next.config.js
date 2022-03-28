@@ -5,7 +5,7 @@ const nextConfig = {
 
 module.exports = {
   serverRuntimeConfig: {
-    apiUrl: "http://localhost:3001"
+    apiUrl: "http://0.0.0.0:3001"
   },
   async redirects() {
     return [
