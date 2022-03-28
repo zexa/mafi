@@ -4,7 +4,7 @@ use axum::{response::IntoResponse, extract::Extension, Json};
 use axum_macros::debug_handler;
 use hyper::StatusCode;
 
-use crate::{lobby::lobby::Lobby, app_exception::AppException, user::user::User};
+use crate::{lobby::{lobby::Lobby, remove_role_from_lobby_request_dto::RemoveRoleFromLobbyRequestDto}, app_exception::AppException, user::user::User};
 
 use super::{lobby_repository::LobbyRepository, create_lobby_request_dto::CreateLobbyRequestDto, add_role_to_lobby_request_dto::AddRoleToLobbyRequestDto};
 
@@ -84,7 +84,11 @@ pub async fn join_lobby(
         return Err(exception);
     }
 
-    lobby.add_player(user);
+    lobby.add_player(user).map_err(|e| {
+        tracing::error!(%e, "Could not add player to lobby because it was already a member");
+
+        AppException::new(StatusCode::BAD_REQUEST, "Could not add player to lobby because it is already a member".to_string())
+    })?;
     
     lobby_repository
         .update(lobby)
@@ -117,6 +121,49 @@ pub async fn add_role_to_lobby(
     }
 
     lobby.add_role(dto.get_role().clone());
+
+    repository
+        .update(lobby)
+        .await
+        .map_err(|e| {
+            tracing::error!(%e, "Could not update lobby in lobby_repository");
+
+            AppException::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Internal server error".to_string()
+            )
+        })?;
+
+    Ok(StatusCode::OK)
+}
+
+
+#[debug_handler]
+pub async fn remove_role_from_lobby(
+    user: User,
+    mut lobby: Lobby,
+    Json(dto): Json<RemoveRoleFromLobbyRequestDto>,
+    Extension(repository): Extension<Arc<LobbyRepository>>,
+) -> Result<impl IntoResponse, AppException> {
+    use crate::lobby::lobby_repository::Inner;
+
+    if lobby.get_owner().get_secret() != user.get_secret() {
+        tracing::error!("Non owner tried to remove role");
+        let exception = AppException::new(
+            StatusCode::BAD_REQUEST, 
+            "Only the owner can remove roles from the lobby".to_string()
+        );
+        return Err(exception);
+    }
+
+    lobby.remove_role(dto.get_role().clone()).map_err(|_| {
+        tracing::error!("Tried to remove role that does not exist in the lobby");
+
+        AppException::new(
+            StatusCode::BAD_REQUEST,
+            "Role does not exist in the lobby".to_string()
+        )
+    })?;
 
     repository
         .update(lobby)

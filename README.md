@@ -1,4 +1,6 @@
 # mafi
+https://mafi.lt
+
 The mafia social game web app.
 
 # How to start

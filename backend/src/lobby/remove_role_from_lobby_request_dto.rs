@@ -3,11 +3,11 @@ use serde::Deserialize;
 use crate::roles::role::Role;
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct AddRoleToLobbyRequestDto {
+pub struct RemoveRoleFromLobbyRequestDto {
     role: Role,
 }
 
-impl AddRoleToLobbyRequestDto {
+impl RemoveRoleFromLobbyRequestDto {
     pub fn get_role(&self) -> &Role {
         &self.role
     }

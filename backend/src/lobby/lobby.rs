@@ -56,12 +56,33 @@ impl Lobby {
         &self.players
     }
 
-    pub fn add_player(&mut self, player: User) {
+    pub fn add_player(&mut self, player: User) -> anyhow::Result<()> {
+        let player_is_already_member = self.players
+            .iter()
+            .find(|p| p.get_secret() == player.get_secret())
+            .is_some();
+
+        if player_is_already_member {
+            return Err(anyhow::format_err!("Player that's already a member cannot join the lobby"));
+        }
+
         self.players.push(player);
+
+        Ok(())
     }
 
     pub fn add_role(&mut self, role: Role) { 
         self.roles.push(role);
+    }
+
+    pub fn remove_role(&mut self, role_to_be_removed: Role) -> anyhow::Result<()> {
+        let index = self.roles
+            .iter()
+            .position(|role| role == &role_to_be_removed)
+            .ok_or(anyhow::format_err!("No such role in lobby"))?;
+        self.roles.remove(index);
+
+        Ok(())
     }
 }
 

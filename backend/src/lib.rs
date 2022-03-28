@@ -5,7 +5,7 @@ use axum::{
     Router, extract::{Extension, extractor_middleware},
 };
 use game::{controller::{get_game, start_game, end_game, get_all_games, get_user_player}, game_repository::GameRepository, game::Game};
-use lobby::{controller::{create_lobby, delete_lobby, get_lobby, join_lobby, get_all_lobbies, add_role_to_lobby}, lobby_repository::LobbyRepository, lobby::Lobby};
+use lobby::{controller::{create_lobby, delete_lobby, get_lobby, join_lobby, get_all_lobbies, add_role_to_lobby, remove_role_from_lobby}, lobby_repository::LobbyRepository, lobby::Lobby};
 use roles::controller::get_all_roles;
 use tracing::info;
 use user::{controller::register_user, user_repository::UserRepository, user::User};
@@ -26,10 +26,11 @@ pub fn get_router() -> Router {
     let lobby_aware_router = Router::new()
         .route("/lobby/:lobby_uuid", get(get_lobby))
         .route("/lobby/:lobby_uuid", delete(delete_lobby))
+        .route("/lobby/:lobby_uuid/role", delete(remove_role_from_lobby))
         .route("/lobby/:lobby_uuid/role", post(add_role_to_lobby))
         .route("/lobby/:lobby_uuid/join", post(join_lobby))
         .route("/lobby/:lobby_uuid/game", post(start_game))
-        .route("/lobby/:lobby_uuid/games", post(get_all_games))
+        .route("/lobby/:lobby_uuid/games", get(get_all_games))
         .merge(game_router)
         .route_layer(extractor_middleware::<Lobby>());
 
