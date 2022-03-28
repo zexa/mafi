@@ -31,4 +31,4 @@ jobs:
           key: ${{ secrets.DEPLOY_AUTHKEY }}
           source: "backend/target/release/mafi"
           target: "~/"
-          strip_components: 1
+          strip_components: 3
