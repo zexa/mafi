@@ -75,7 +75,7 @@ function IndividualLobby(props) {
 
     return (
         <div>
-            {props.errors.map((err) => 
+            {props.errors.map((err, i) => 
                 <Card color="error">{err}</Card>
             )}
             <Text h1>Lobby</Text>
