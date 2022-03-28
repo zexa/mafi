@@ -11,6 +11,7 @@ env:
 jobs:
   build_and_test:
     name: Rust project - latest
+    environment: default
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,14 +22,13 @@ jobs:
       # - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       # - run: cd backend && cargo build --verbose --release
       - run: mkdir -p backend/target/release && echo "testy" > backend/target/release/mafi # DELETE ME WHEN DONE TESTING
-      # - run: echo ${{ secrets.DEPLOY_AUTHKEY }} > /tmp/private_key
       - name: Copy files to remote server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
-          # key_path: /tmp/private_key
           key: ${{ secrets.DEPLOY_AUTHKEY }}
           source: "backend/target/release/mafi"
           target: "~/mafi"
