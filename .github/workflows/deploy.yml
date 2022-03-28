@@ -36,4 +36,4 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_AUTHKEY }}
-          script: chmod +x ~/mafi && kill $(lsof -t -i:3001) && ~/mafi &
+          script: chmod +x ~/mafi && kill $(lsof -t -i:3001) && RUST_LOG=info MAFI_PORT=3001 ~/mafi &
