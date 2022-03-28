@@ -28,7 +28,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASSWORD }}
           key: ${{ secrets.DEPLOY_AUTHKEY }}
           source: "backend/target/release/mafi"
           target: "~/mafi"
