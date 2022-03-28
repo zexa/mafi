@@ -22,12 +22,20 @@ jobs:
       # - run: cd backend && cargo build --verbose --release
       - run: mkdir -p backend/target/release && echo "testy" > backend/target/release/mafi
       - run: echo ${{ secrets.DEPLOY_AUTHKEY }} > /tmp/private_key
-      - name: Copy files to remote server
-        uses: appleboy/scp-action@master
+      # - name: Copy files to remote server
+      #   uses: appleboy/scp-action@master
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     password: ${{ secrets.DEPLOY_PASSWORD }}
+      #     key_path: /tmp/private_key
+      #     source: "backend/target/release/mafi"
+      #     target: "~/mafi"
+      - name: Publish
+        uses: nogsantos/scp-deploy@master
         with:
           host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASSWORD }}
-          key_path: /tmp/private_key
-          source: "backend/target/release/mafi"
-          target: "~/mafi"
+          user: ${{ secrets.DEPLOY_USER }}
+          src: ./backend/target/release/mafi
+          remote: "~"
+          key: /tmp/private_key
