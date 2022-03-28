@@ -21,7 +21,9 @@ jobs:
       - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       # - run: cd backend && cargo build --verbose --release
       - run: mkdir -p backend/target/release && echo "testy" > backend/target/release/mafi
-      - run: echo ${{ secrets.DEPLOY_AUTHKEY }} > /tmp/private_key
+      # - run: echo ${{ secrets.DEPLOY_AUTHKEY }} > /tmp/private_key
+      - run: echo "hello world" > /tmp/hello
+      - run: cat /tmp/hello
       - name: Copy files to remote server
         uses: appleboy/scp-action@master
         with:
