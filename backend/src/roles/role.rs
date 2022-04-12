@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
-use strum::{EnumString, EnumVariantNames};
+use strum::{EnumIter, EnumString, EnumVariantNames};
 
-#[derive(Debug, Clone, Serialize, Deserialize, EnumString, EnumVariantNames, PartialEq)]
+#[cfg_attr(test, derive(EnumIter))]
+#[derive(Debug, Clone, Serialize, Deserialize, EnumString, EnumVariantNames, PartialEq, Eq, Hash)]
 pub enum Role {
     Godfather,
     MafiaGoon,

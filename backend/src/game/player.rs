@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{user::user::User, roles::role::Role};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct Player {
     user: User,
     role: Role,

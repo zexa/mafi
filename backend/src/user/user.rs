@@ -10,7 +10,7 @@ use crate::app_exception::AppException;
 
 use super::user_repository::UserRepository;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct User {
     name: String,
     secret: Uuid,

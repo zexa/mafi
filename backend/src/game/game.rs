@@ -8,17 +8,20 @@ use rand::{prelude::SliceRandom, thread_rng};
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::{lobby::lobby::Lobby, user::user::User, app_exception::AppException};
+use crate::{lobby::lobby::Lobby, user::user::User, app_exception::AppException, roles::role::{Role, self}};
 
-use super::{player::Player, game_repository::GameRepository, game_status::GameStatus};
+use super::{player::Player, game_repository::GameRepository, game_status::{GameStatus, self}, action::Action, game_rules::GameRules};
 
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Game {
     uuid: Uuid,
     lobby_uuid: Uuid,
+    roles: Vec<Role>,
     players: Vec<Player>,
     game_status: GameStatus,
+    game_rules: GameRules,
+    day: u8,
 }
 
 impl Game {
@@ -50,11 +53,26 @@ impl Game {
             players.push(player);
         }
 
+        let game_status = if players.len() == 0 {
+            GameStatus::Finished
+        } else {
+            let role = roles.get(0).ok_or_else(|| {
+                tracing::error!("Could not construct GameStatus");
+
+                format_err!("The developer sucks, some theoretically impossible scenario happened")
+            })?;
+
+            GameStatus::Night(role.clone())
+        };
+
         let game = Self {
             uuid: Uuid::new_v4(),
             lobby_uuid: lobby.get_uuid().clone(),
+            roles: lobby.get_roles().clone(),
             players,
-            game_status: GameStatus::Ongoing,
+            game_status,
+            game_rules: GameRules::default(),
+            day: 0,
         };
 
         Ok(game)
@@ -77,6 +95,16 @@ impl Game {
             .clone()
             .into_iter()
             .find(|p| p.get_user().get_secret() == user.get_secret())
+    }
+
+    fn validate_action(&self, action: &Action) -> anyhow::Result<()> {
+        todo!()
+    }
+
+    pub fn add_action(&mut self, action: Action) -> anyhow::Result<()> {
+        self.validate_action(&action)?;
+
+        todo!()
     }
 }
 
